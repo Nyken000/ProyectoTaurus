@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Producto</title>
+</head>
+<body>
+    <h1>{% if form.instance.id %}Editar Producto{% else %}Crear Producto{% endif %}</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">{% if form.instance.id %}Actualizar{% else %}Guardar{% endif %}</button>
+    </form>
+</body>
+</html>

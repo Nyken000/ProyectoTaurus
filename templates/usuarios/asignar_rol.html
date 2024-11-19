@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Asignar Rol</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Asignar Rol a {{ usuario.username }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="rol" class="form-label">Rol:</label>
+                <select name="rol" id="rol" class="form-select">
+                    {% for key, value in usuario.ROLES %}
+                    <option value="{{ key }}" {% if usuario.rol == key %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <a href="{% url 'lista_usuarios' %}" class="btn btn-secondary">Volver a la Lista</a>
+        </form>
+    </div>
+</body>
+</html>
