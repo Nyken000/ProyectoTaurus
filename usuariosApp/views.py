@@ -63,3 +63,7 @@ def asignar_rol(request, user_id):
             messages.error(request, "Rol no válido.")
         return redirect('lista_usuarios')
     return render(request, 'usuarios/asignar_rol.html', {'usuario': usuario})
+
+def perfil_usuario(request):
+    """Vista para mostrar el perfil del usuario autenticado"""
+    return render(request, 'usuarios/perfil.html', {'usuario': request.user})

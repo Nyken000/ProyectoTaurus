@@ -1,17 +1,27 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Mi Perfil</title>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-</head>
-<body>
-    <div class="container mt-5">
-        <h1>Perfil de {{ usuario.username }}</h1>
-        <p><strong>Nombre:</strong> {{ usuario.first_name }} {{ usuario.last_name }}</p>
-        <p><strong>Email:</strong> {{ usuario.email }}</p>
-        <p><strong>Rol:</strong> {{ usuario.get_rol_display }}</p>
-        <a href="{% url 'home' %}" class="btn btn-primary">Volver al Inicio</a>
+{% extends 'base.html' %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Mi Perfil</h2>
+    <div class="card mx-auto" style="max-width: 600px;">
+        <div class="card-body">
+            <h5 class="card-title text-center">Información del Usuario</h5>
+            <p><strong>Nombre de usuario:</strong> {{ usuario.username }}</p>
+            <p><strong>Correo electrónico:</strong> {{ usuario.email }}</p>
+            {% if usuario.first_name or usuario.last_name %}
+            <p><strong>Nombre completo:</strong> {{ usuario.first_name }} {{ usuario.last_name }}</p>
+            {% endif %}
+            {% if usuario.date_joined %}
+            <p><strong>Fecha de registro:</strong> {{ usuario.date_joined|date:"d/m/Y H:i" }}</p>
+            {% endif %}
+        </div>
     </div>
-</body>
-</html>
+
+    <!-- Botón para edición (opcional) -->
+    <div class="text-center mt-4">
+        <a href="#" class="btn btn-primary disabled">Editar Perfil (Proximamente)</a>
+    </div>
+</div>
+{% endblock %}

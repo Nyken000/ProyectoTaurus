@@ -21,7 +21,7 @@ STATIC_DIR = os.path.join(BASE_DIR,'static')
 
 # Media files (uploaded by users)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/img')
 
 # Redirección para usuarios no autenticados
 LOGIN_URL = '/usuarios/login/'

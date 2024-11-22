@@ -3,14 +3,17 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Carrito, ItemCarrito
 from productosApp.models import Producto
+from math import floor
 
 @login_required
 def ver_carrito(request):
     carrito, creado = Carrito.objects.get_or_create(usuario=request.user)
-    total_carrito = sum(item.total_item() for item in carrito.items.all())
+    items = carrito.items.all()
+    total = sum(floor(item.total_item()) for item in items)  # Redondea cada item al entero más cercano
     return render(request, 'pedidos/ver_carrito.html', {
         'carrito': carrito,
-        'total_carrito': total_carrito,
+        'items': items,
+        'total': total
     })
 
 

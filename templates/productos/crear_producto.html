@@ -1,15 +1,28 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Crear Producto</title>
-</head>
-<body>
-    <h1>{% if form.instance.id %}Editar Producto{% else %}Crear Producto{% endif %}</h1>
-    <form method="post" enctype="multipart/form-data">
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if form.instance.id %}Editar Producto{% else %}Crear Producto{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">
+        {% if form.instance.id %}
+            Editar Producto
+        {% else %}
+            Crear Producto
+        {% endif %}
+    </h2>
+    
+    <form method="POST" enctype="multipart/form-data" class="mt-4">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">{% if form.instance.id %}Actualizar{% else %}Guardar{% endif %}</button>
+        <div class="mb-3">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-success">
+            {% if form.instance.id %}Actualizar{% else %}Guardar{% endif %}
+        </button>
+        <a href="{% url 'lista_productos' %}" class="btn btn-secondary ms-2">Cancelar</a>
     </form>
-</body>
-</html>
+</div>
+{% endblock %}

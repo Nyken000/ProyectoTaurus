@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mt-5">
     <h2>Mi Carrito</h2>
-    {% if carrito.items.exists %}
+    {% if items %}
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -17,10 +17,10 @@
                 </tr>
             </thead>
             <tbody>
-                {% for item in carrito.items.all %}
+                {% for item in items %}
                 <tr>
                     <td>{{ item.producto.nombre }}</td>
-                    <td>${{ item.producto.precio|floatformat:2 }}</td>
+                    <td>${{ item.producto.precio|floatformat:0 }}</td>
                     <td>
                         <form method="POST" action="{% url 'actualizar_cantidad' item.id %}">
                             {% csrf_token %}
@@ -28,7 +28,7 @@
                             <button type="submit" class="btn btn-primary btn-sm">Actualizar</button>
                         </form>
                     </td>
-                    <td>${{ item.total_item|floatformat:2 }}</td>
+                    <td>${{ item.total_item }}</td>
                     <td>
                         <a href="{% url 'eliminar_item_carrito' item.id %}" class="btn btn-danger btn-sm">Eliminar</a>
                     </td>
@@ -36,7 +36,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        <h3>Total: ${{ total_carrito|floatformat:2 }}</h3>
+        <h3>Total: ${{ total }}</h3>
     {% else %}
         <p>No tienes productos en tu carrito.</p>
     {% endif %}
