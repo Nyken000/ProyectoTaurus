@@ -1,17 +1,16 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Lista de Usuarios</title>
-</head>
-<body>
-    <h1>Lista de Usuarios</h1>
-    <table>
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Usuarios{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Gestión de Usuarios</h2>
+    <table class="table table-striped mt-4">
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Nombre</th>
-                <th>Usuario</th>
-                <th>Email</th>
+                <th>Correo</th>
                 <th>Rol</th>
                 <th>Acciones</th>
             </tr>
@@ -19,18 +18,16 @@
         <tbody>
             {% for usuario in usuarios %}
             <tr>
-                <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
+                <td>{{ usuario.id }}</td>
                 <td>{{ usuario.username }}</td>
                 <td>{{ usuario.email }}</td>
-                <td>{% if usuario.is_staff %}Administrador{% else %}Usuario{% endif %}</td>
+                <td>{{ usuario.get_rol_display }}</td>
                 <td>
-                    <a href="#">Editar</a>
-                    <a href="#">Eliminar</a>
+                    <a href="{% url 'asignar_rol' usuario.id %}" class="btn btn-primary btn-sm">Asignar Rol</a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'home' %}">Volver al Inicio</a>
-</body>
-</html>
+</div>
+{% endblock %}

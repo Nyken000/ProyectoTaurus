@@ -2,14 +2,16 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Perfil de Usuario</title>
+    <title>Mi Perfil</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
 </head>
 <body>
-    <h1>Perfil de Usuario</h1>
-    <p><strong>Nombre:</strong> {{ usuario.first_name }} {{ usuario.last_name }}</p>
-    <p><strong>Usuario:</strong> {{ usuario.username }}</p>
-    <p><strong>Email:</strong> {{ usuario.email }}</p>
-    <p><strong>Rol:</strong> {% if usuario.is_staff %}Administrador{% else %}Usuario{% endif %}</p>
-    <a href="{% url 'home' %}">Volver al Inicio</a>
+    <div class="container mt-5">
+        <h1>Perfil de {{ usuario.username }}</h1>
+        <p><strong>Nombre:</strong> {{ usuario.first_name }} {{ usuario.last_name }}</p>
+        <p><strong>Email:</strong> {{ usuario.email }}</p>
+        <p><strong>Rol:</strong> {{ usuario.get_rol_display }}</p>
+        <a href="{% url 'home' %}" class="btn btn-primary">Volver al Inicio</a>
+    </div>
 </body>
 </html>

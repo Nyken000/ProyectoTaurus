@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import RegistroForm
-from django.contrib.auth.decorators import user_passes_test
-from django.contrib.auth.models import User
-from usuariosApp.models import Usuario
+from .models import Usuario
 
+# Registro de usuario
 def registro_usuario(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST)
@@ -17,24 +17,7 @@ def registro_usuario(request):
         form = RegistroForm()
     return render(request, 'usuarios/registro.html', {'form': form})
 
-def login_usuario(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            messages.success(request, "Has iniciado sesión correctamente.")
-            return redirect('home')  # Cambia 'home' por la vista que deseas después del login
-        else:
-            messages.error(request, "Nombre de usuario o contraseña incorrectos.")
-    return render(request, 'usuarios/login.html')  # Actualizado para usar 'usuarios/login.html'
-
-def logout_usuario(request):
-    logout(request)
-    messages.success(request, "Has cerrado sesión correctamente.")
-    return redirect('login')
-
+# Login de usuario
 def login_usuario(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -48,39 +31,25 @@ def login_usuario(request):
             messages.error(request, "Nombre de usuario o contraseña incorrectos.")
     return render(request, 'usuarios/login.html')
 
-from django.contrib.auth.decorators import login_required
+# Logout de usuario
+@login_required
+def logout_usuario(request):
+    logout(request)
+    messages.success(request, "Has cerrado sesión correctamente.")
+    return redirect('home')
 
+# Perfil de usuario
 @login_required
 def perfil_usuario(request):
     return render(request, 'usuarios/perfil.html', {'usuario': request.user})
 
-
-from django.contrib.auth.models import User
-
-@login_required
+# Lista de usuarios (solo administrador)
+@user_passes_test(lambda u: u.rol == 'admin', login_url='home')
 def lista_usuarios(request):
-    if request.user.is_staff:
-        usuarios = User.objects.all()
-        return render(request, 'usuarios/lista_usuarios.html', {'usuarios': usuarios})
-    else:
-        messages.error(request, "No tienes permiso para acceder a esta página.")
-        return redirect('home')
+    usuarios = Usuario.objects.all()
+    return render(request, 'usuarios/lista_usuarios.html', {'usuarios': usuarios})
 
-# Solo administradores pueden acceder
-@user_passes_test(lambda u: u.is_staff, login_url='home')
-def asignar_rol(request, user_id):
-    usuario = get_object_or_404(User, id=user_id)
-    if request.method == 'POST':
-        nuevo_rol = request.POST.get('rol')
-        if nuevo_rol == 'staff':
-            usuario.is_staff = True
-        else:
-            usuario.is_staff = False
-        usuario.save()
-        messages.success(request, f"Rol actualizado correctamente para {usuario.username}.")
-        return redirect('lista_usuarios')
-    return render(request, 'usuarios/asignar_rol.html', {'usuario': usuario})
-
+# Asignar rol (solo administrador)
 @user_passes_test(lambda u: u.rol == 'admin', login_url='home')
 def asignar_rol(request, user_id):
     usuario = get_object_or_404(Usuario, id=user_id)
@@ -94,4 +63,3 @@ def asignar_rol(request, user_id):
             messages.error(request, "Rol no válido.")
         return redirect('lista_usuarios')
     return render(request, 'usuarios/asignar_rol.html', {'usuario': usuario})
-

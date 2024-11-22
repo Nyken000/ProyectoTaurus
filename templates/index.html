@@ -1,48 +1,43 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
 {% load static %}
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proyecto Taurus</title>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-</head>
-<body>
-    <header class="bg-primary p-5 text-white text-center">
-        <h1>Proyecto Taurus</h1>
-    </header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'home' %}">Inicio</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    {% if es_admin %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'lista_productos' %}">Administrar Productos</a>
-                        <a class="nav-link" href="{% url 'lista_usuarios' %}">Gestionar Usuarios</a>
-                    </li>
+
+{% block title %}Inicio | Proyecto Taurus{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Bienvenido al Proyecto Taurus</h2>
+    <p class="text-center">Estos son nuestros productos:</p>
+
+    <div class="row">
+        {% for producto in productos %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <img src="{% static 'img/default.png' %}" class="card-img-top" alt="Imagen no disponible" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ producto.nombre }}</h5>
+                    <p class="card-text">{{ producto.descripcion }}</p>
+                    <p class="text-muted">Precio: ${{ producto.precio }}</p>
+                    <p class="text-muted">Stock: {{ producto.stock }}</p>
+
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'agregar_al_carrito' producto.id %}" class="btn btn-success btn-sm">Añadir al Carrito</a>
+                        {% if es_admin %}
+                        <div class="mt-2">
+                            <a href="{% url 'editar_producto' producto.id %}" class="btn btn-primary btn-sm">Editar</a>
+                            <a href="{% url 'eliminar_producto' producto.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <p class="text-danger">Inicia sesión para comprar este producto.</p>
                     {% endif %}
-                
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'registro' %}">Registrarse</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
-                    </li>
-                </ul>
+                </div>
             </div>
         </div>
-    </nav>
-    <div class="container mt-5">
-        <h2 class="text-center">Bienvenido al Proyecto Taurus</h2>
-        <p class="text-center">Seleccione una opción del menú para continuar.</p>
+        {% endfor %}
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

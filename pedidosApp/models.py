@@ -1,24 +1,18 @@
 from django.db import models
-from django.contrib.auth import get_user_model  # Importación de get_user_model para evitar el problema de importación circular
+from usuariosApp.models import Usuario  # Importar el modelo de usuario
 from productosApp.models import Producto
 
-# Obtener el modelo de usuario configurado
-Usuario = get_user_model()
+class Carrito(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='carrito')
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
 
-class Pedido(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    fecha_pedido = models.DateTimeField(auto_now_add=True)
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-    estado = models.CharField(max_length=20, choices=[('pendiente', 'Pendiente'), ('enviado', 'Enviado'), ('entregado', 'Entregado')])
+    def total(self):
+        return sum(item.total_item() for item in self.items.all())
 
-    def __str__(self):
-        return f"Pedido {self.id} - {self.usuario.username}"
-    
-class DetallePedido(models.Model):
-    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
+class ItemCarrito(models.Model):
+    carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE, related_name='items')
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    cantidad = models.PositiveIntegerField()
-    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    cantidad = models.PositiveIntegerField(default=1)
 
-    def __str__(self):
-        return f"{self.producto.nombre} - {self.cantidad} unidades"
+    def total_item(self):
+        return self.producto.precio * self.cantidad

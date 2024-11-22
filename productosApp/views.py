@@ -38,4 +38,5 @@ def eliminar_producto(request, id):
         producto.delete()
         messages.success(request, "Producto eliminado exitosamente.")
         return redirect('lista_productos')
-    return render(request, 'productos/eliminar_producto.html', {'producto': producto})
+    return render(request, 'productos/eliminar_productos.html', {'producto': producto})
+
